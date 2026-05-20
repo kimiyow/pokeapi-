@@ -3,7 +3,7 @@ import type { Pokemon, PokemonDetail } from '../types/types';
 const API_URL = 'https://pokeapi.co/api/v2';
 
 export const getPokemones = async(): Promise<Pokemon[]> => {
-    const response = await fetch(`${API_URL}/pokemon?limit=1000`);
+    const response = await fetch(`${API_URL}/pokemon?limit=151`);
   
     if (!response.ok) {
         throw new Error('Error al obtener los pokemones');
