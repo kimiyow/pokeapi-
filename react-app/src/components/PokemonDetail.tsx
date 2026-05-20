@@ -26,9 +26,7 @@ export default function PokemonDetailView({ name, onBack }: PokemonDetailViewPro
     if (!pokemon) return null;
 
    
-    const imageUrl = pokemon.sprites.other?.['official-artwork']?.front_default 
-                  || pokemon.sprites.front_default 
-                  || '';
+    const imageUrl = pokemon.sprites.other?.['official-artwork']?.front_default || pokemon.sprites.front_default  || '';
 
     return (
         <article className="pokemon-card">
