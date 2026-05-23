@@ -4,6 +4,7 @@ import type { Pokemon } from './types/types'
 import { useFavoritesStore } from './store/favoritesStore'
 import PokemonCard from './components/PokemonCard'
 import PokemonDetailView from './components/PokemonDetail'
+import PokemonVersus from './components/PokemonVersus'
 
 import './App.css'
 
@@ -26,6 +27,8 @@ function App() {
     const favorites = useFavoritesStore((state) => state.favorites)
     const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite)
     const isFavorite = useFavoritesStore((state) => state.isFavorite)
+
+    const [versusPokemones, setVersusPokemones] = useState<string[]>([])
 
    
     useEffect(() => {
@@ -74,8 +77,19 @@ function App() {
         setPaginatedPokemones(filteredPokemones.slice(startIndex, endIndex))
     }, [filteredPokemones, currentPage])
 
-   
+    
     const totalPages = Math.ceil(filteredPokemones.length / POKEMON_PER_PAGE)
+
+    const toggleVersus = (name: string) => {
+        setVersusPokemones(prev => {
+            if (prev.includes(name)) {
+                return prev.filter(p => p !== name)
+            } else if (prev.length < 2) {
+                return [...prev, name]
+            }
+            return prev
+        })
+    }
 
     if (loading) return <p>Cargando pokemones...</p>
     if (error) return <p>Error: {error}</p>
@@ -90,10 +104,20 @@ function App() {
         )
     }
 
+    if (versusPokemones.length === 2) {
+        return (
+            <PokemonVersus
+                pokemon1Name={versusPokemones[0]}
+                pokemon2Name={versusPokemones[1]}
+                onBack={() => setVersusPokemones([])}
+            />
+        )
+    }
+
    
     return (
         <div className="app-container">
-            <h1>Pokédex</h1>
+            <h1>Pokedex</h1>
             
             <div className="controls">
                 <input
@@ -136,11 +160,11 @@ function App() {
                         checked={showOnlyFavorites}
                         onChange={(e) => setShowOnlyFavorites(e.target.checked)}
                     />
-                    Solo favoritos
+                    Mis favoritos
                 </label>
             </div>
 
-            <p className="results-count">{filteredPokemones.length} Pokémon encontrados</p>
+            <p className="results-count">{filteredPokemones.length} Pokemon encontrados</p>
 
             <div className="pokemon-grid">
                 {paginatedPokemones.map((pokemon) => (
@@ -150,6 +174,8 @@ function App() {
                         onClick={setSelectedPokemon}
                         isFavorite={isFavorite(pokemon.name)}
                         onToggleFavorite={toggleFavorite}
+                        isVersus={versusPokemones.includes(pokemon.name)}
+                        onToggleVersus={toggleVersus}
                     />
                 ))}
             </div>

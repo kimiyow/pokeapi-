@@ -5,6 +5,8 @@ interface PokemonCardProps {
     onClick: (name: string) => void;
     isFavorite: boolean;  
     onToggleFavorite: (name: string) => void;  
+    isVersus?: boolean;
+    onToggleVersus?: (name: string) => void;
 }
 
 function getIdFromUrl(url: string): number {
@@ -12,7 +14,7 @@ function getIdFromUrl(url: string): number {
     return parseInt(parts[parts.length - 1]);
 }
 
-function PokemonCard({ pokemon, onClick, isFavorite, onToggleFavorite }: PokemonCardProps) {
+function PokemonCard({ pokemon, onClick, isFavorite, onToggleFavorite, isVersus = false, onToggleVersus }: PokemonCardProps) {
     
     const id = getIdFromUrl(pokemon.url);
     const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
@@ -28,6 +30,18 @@ function PokemonCard({ pokemon, onClick, isFavorite, onToggleFavorite }: Pokemon
             >
                 {isFavorite ? '★' : '☆'}
             </button>
+
+            {onToggleVersus && (
+                <button 
+                    className={`versus-btn ${isVersus ? 'active' : ''}`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleVersus(pokemon.name);
+                    }}
+                >
+                    {isVersus ? '⚔' : '⛊'}
+                </button>
+            )}
             
             <div onClick={() => onClick(pokemon.name)} className="pokemon-card__content">
                 <img
